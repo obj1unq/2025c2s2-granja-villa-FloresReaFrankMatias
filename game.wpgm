@@ -18,8 +18,13 @@ program farmville {
 	keyboard.t().onPressDo {  personaje.sembrar(new Trigo())}
 	keyboard.o().onPressDo {  personaje.sembrar(new Tomaco())}	
 
-	keyboard.r().onPressDo {  personaje.regar(Maiz)}
+	keyboard.r().onPressDo {  personaje.regar( personaje.plantaAca() )}
 
+	keyboard.c().onPressDo {( personaje.cosechar() )}
+
+	keyboard.v().onPressDo {( personaje.vender() )}
+
+	keyboard.space().onPressDo{( personaje.oroTotal() )}
  	//  COMIENZA
 	game.start()
 }
