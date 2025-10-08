@@ -7,9 +7,7 @@ class Maiz {
 	method precio() {
 	  return precio
 	}
-	method sembrar(){
-		game.addVisual(self)
-	}
+	
 	method esRegada() {
 	  estado.regar()
 	}
@@ -80,9 +78,7 @@ class Trigo {
 		// TODO: hacer que devuelva la imagen que corresponde
 		return "wheat_" + evolucion + ".png"
 	}
-	method sembrar(){
-		game.addVisual(self)
-	}
+	
 	method esRegada() {
 	  if( evolucion <3 ){
 		evolucion += 1
@@ -114,9 +110,7 @@ class Tomaco {
 		// TODO: hacer que devuelva la imagen que corresponde
 		return "tomaco_baby.png"
 	}
-	method sembrar(){
-		game.addVisual(self)
-	}
+	
 	method esRegada() {
 	  //position = game.at(position.x(), (game.height()-1).min(position.y() +1))
 		self.validarMoverArriba()

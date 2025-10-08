@@ -1,0 +1,94 @@
+import cultivos.* 
+import personaje.*
+import wollok.game.*
+
+
+describe "Test de Sembrado" {
+  test "Sembrar Corn" {
+    personaje.sembrar(new Maiz() )
+    assert.that(personaje.hayPlantaEn( personaje.position() )) 
+  }
+   test "Sembrar Tomaco" {
+    personaje.sembrar(new Tomaco() )
+    assert.that(personaje.hayPlantaEn( personaje.position() )) 
+  }
+   test "Sembrar Wheat" {
+    personaje.sembrar(new Trigo() )
+    assert.that(personaje.hayPlantaEn( personaje.position() )) 
+  }
+}
+
+//-----------------------------------
+describe "Test de Cosecha" {
+    test "Cosechar Corn" {
+        //Siembra
+        
+        personaje.sembrar(new Maiz() )
+        assert.that(personaje.hayPlantaEn( personaje.position() )) 
+        //Regar
+        personaje.regar(new Maiz())
+        //assert.equals(adult, cultivos.estado())
+        //Cosechar
+        personaje.cosechar()
+        assert.notThat(personaje.hayPlantaAca())  
+
+    }
+    test "Cosechar Tomaco" {
+        //Siembra
+        
+        personaje.sembrar(new Tomaco() )
+        assert.that(personaje.hayPlantaEn( personaje.position() ))
+        //Riega
+        //personaje.regar(personaje.plantaAca())
+        //Cosecha
+        //personaje.position (  game.at( personaje.position.x(), personaje.position.y() +1  ) ) 
+        personaje.cosechar()
+        //assert.equals( #{new Tomaco()}, personaje.cosecha() )
+
+    }
+    test "Cosechar Wheat" {
+        //Siembra
+        
+        personaje.sembrar(new Trigo() )
+        assert.that(personaje.hayPlantaEn( personaje.position() ))
+        //Riega
+        personaje.regar( personaje.plantaAca() ) 
+        personaje.regar( personaje.plantaAca() ) 
+        //Cosecha 
+        personaje.cosechar()
+        
+        assert.notThat(personaje.hayPlantaAca())
+    }
+}
+
+describe "Vender Cosechas" {
+    test "vender 1 maiz adulto, trigo de evolucion 2 y 1 tomaco" {
+        personaje.position( game.at(1,1) )
+        assert.equals(game.at(1,1), personaje.position())
+        personaje.sembrar(new Maiz() )
+        personaje.regar( personaje.plantaAca() )
+        personaje.cosechar()
+        // 150 monedas por el maiz
+        personaje.position( game.at(2,1) )
+        personaje.sembrar(new Trigo() )
+        personaje.regar(personaje.plantaAca() )
+        personaje.regar(personaje.plantaAca() )
+        personaje.cosechar()
+
+        //100 monedas por el trigo de evolucion 2
+        
+        personaje.position( game.at(3,1) )
+        personaje.sembrar(new Tomaco() )
+        personaje.position( game.at(4,1) )
+        personaje.cosechar()
+        //80 por el tomaco
+        personaje.vender()
+        assert.equals(#{}, personaje.cosecha()  )
+        assert.equals(330, personaje.monedas())            
+
+
+    }
+}
+
+
+
