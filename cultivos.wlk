@@ -1,5 +1,19 @@
 import wollok.game.*
 import personaje.*
+
+
+object cultivoFactory {
+    method crearMaiz() {
+        return new Maiz()
+    }
+    method crearTrigo() {
+        return new Trigo()
+    }
+    method crearTomaco() {
+        return new Tomaco()
+    }
+}
+
 class Maiz {
 	var property position = personaje.position()
 	var estado = bebe
@@ -68,14 +82,8 @@ class Trigo {
 	var evolucion = 0
 	const property precio = (evolucion - 1) * 100
 
-	//method position() {
-		// TODO: hacer que aparezca donde lo plante Hector
-	//	return game.at(personaje.position().x(), personaje.position().y())
-	//}
-		var property position = personaje.position()  
-		//var property image = "wheat_0.png" 
+	var property position = personaje.position()  
 	method image() {
-		// TODO: hacer que devuelva la imagen que corresponde
 		return "wheat_" + evolucion + ".png"
 	}
 	
@@ -85,7 +93,6 @@ class Trigo {
 	  }else{
 		evolucion = 0
 	  }
-	  
 	}
 	method puedeSerCosechada() {
 	  return evolucion > 1
@@ -97,36 +104,30 @@ class Trigo {
 
 
 
-
 //---------------------------------------------
 class Tomaco {
-	//method position() {
-		// TODO: hacer que aparezca donde lo plante Hector
-	//	return game.at(1, 1)
-	//}
 	var property position = personaje.position()  
 	const property precio = 80
 	method image() {
-		// TODO: hacer que devuelva la imagen que corresponde
 		return "tomaco_baby.png"
 	}
 	
-	method esRegada() {
-	  //position = game.at(position.x(), (game.height()-1).min(position.y() +1))
-		self.validarMoverArriba()
-		if(position.y() != game.height()-1 ){
-			position= game.at(position.x(), position.y()+1)	
-		}else{
-			position= game.at(position.x(), 0)
+	method esRegado() {
+		if(position.up(1).y() != game.height() && game.getObjectsIn(position.up(1)).isEmpty() ){
+				position = position.up(1)
+		} else {
+			position = game.at(position.x(), 0)
 		}
-
 	}
-	method validarMoverArriba() {
-		var posAlMover=  game.at(position.x(),position.y()+1)
-	  if(personaje.hayPlantaEn(posAlMover)){
-			self.error("No se puede mover mas arriba")
-	  }
+	method esRegada() {
+		if (not (position.y() == game.height() - 1) && not personaje.hayPlantaEn(position.up(1)) ) {
+			position = position.up(1)
+		}
+		else {
+			position = position.down(game.height() - 1)
+		}
 	}
+	
 	method puedeSerCosechada() {
 	  return true
 	}
@@ -134,4 +135,5 @@ class Tomaco {
 	  game.removeVisual(self)
 	}
 }
+
 

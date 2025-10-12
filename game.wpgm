@@ -1,6 +1,8 @@
+import aspersor.*
 import wollok.game.*
 import personaje.*
 import cultivos.*
+import direcciones.*
 
 program farmville {
 	//  CONFIG	
@@ -10,13 +12,16 @@ program farmville {
 	game.ground("ground.png")
 
 	//  VISUALES
- 	game.addVisualCharacter(personaje)
+ 	game.addVisual(personaje)
  	// game.addVisual(new Maiz()) // Se agrega a modo de prueba
- 	
+ 	keyboard.up().onPressDo({personaje.mover(arriba)})
+    keyboard.down().onPressDo({personaje.mover(abajo)})
+    keyboard.left().onPressDo({personaje.mover(izquierda)})
+    keyboard.right().onPressDo({personaje.mover(derecha)})
 	
-	keyboard.m().onPressDo {  personaje.sembrarMaiz (  new Maiz()) }
-	keyboard.t().onPressDo {  personaje.sembrar(new Trigo())}
-	keyboard.o().onPressDo {  personaje.sembrar(new Tomaco())}	
+	keyboard.m().onPressDo {  personaje.sembrar( cultivoFactory.crearMaiz())  }
+	keyboard.t().onPressDo {  personaje.sembrar( cultivoFactory.crearTrigo()) }
+	keyboard.o().onPressDo {  personaje.sembrar( cultivoFactory.crearTomaco())}	
 
 	keyboard.r().onPressDo {  personaje.regar( personaje.plantaAca() )}
 
@@ -25,6 +30,11 @@ program farmville {
 	keyboard.v().onPressDo {( personaje.vender() )}
 
 	keyboard.space().onPressDo{( personaje.oroTotal() )}
+
+
+	keyboard.a().onPressDo {  personaje.colocarAspersor() }
+	//game.onTick(1000, "riego", { personaje.} )
+	game.onTick(1000, "regarLimitrofes", { aspersores.activarAspersores()  } )
  	//  COMIENZA
 	game.start()
 }

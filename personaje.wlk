@@ -1,6 +1,7 @@
 import wollok.mirror.*
 import wollok.game.*
-
+import direcciones.*
+import aspersor.*
 object personaje {
 	var  property position = game.center()
 	const property image = "fplayer.png"
@@ -9,18 +10,17 @@ object personaje {
 	var monedasDeOro = 0
 	
 	method monedas() = monedasDeOro
-
+	
+	method mover(direccion){
+        position = direccion.siguiente(position)
+    }
 	method sembrar(semilla) {
 	  	self.validarSembrar(semilla)
 		game.addVisual(semilla)
 		cultivos.add(semilla)
 		
 	}
-//-------
 
-	
-
-//-------
 	method regar(planta) {
 		self.validadRegar(self.plantaAca())	
 	  	planta.esRegada()
@@ -37,6 +37,19 @@ object personaje {
 	}
 	method oroTotal() {
 	  game.say(self,"Tengo"  + monedasDeOro + "mondeas de oro y" + cosecha.size()+" plantas para vender")
+	}
+		method colocarAspersor() {
+			self.validarSembrar(self.position())
+			
+			aspersores.plantarAspersor()
+			//aspersor.regarAspersor()
+		}
+
+	method puedeRegarse() {
+	  return false
+	}
+
+	method esRegada() {
 	}
 
 
@@ -59,7 +72,7 @@ object personaje {
 
 
 
-//------------------------    Getters   -------
+//------------------------    consultas   -------
 	method hayPlantaAca() {
 		//consulta si en la poscicion del personaje hay una planta
 	  return  cultivos.any({ planta => planta.position() == position })
@@ -72,5 +85,6 @@ object personaje {
 		//retorna is hay una plnata en una pos por parametro
 	  return  cultivos.any({ planta => planta.position() == pos })
 	}
+	
 
 }
