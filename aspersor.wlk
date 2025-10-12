@@ -54,11 +54,12 @@ class Aspersor {
 
   method regarLimitrofes() {
         const posicionesARegar = [
+            //pos ortogonales
           position.up(1),
           position.right(1),
           position.down(1),
           position.left(1),
-          // diagonals
+          // posiciones diagonales
           position.up(1).right(1),
           position.up(1).left(1),
           position.down(1).right(1),

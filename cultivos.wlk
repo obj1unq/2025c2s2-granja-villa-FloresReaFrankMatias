@@ -3,47 +3,38 @@ import personaje.*
 
 
 object cultivoFactory {
-    method crearMaiz() {
-        return new Maiz()
+    method crearMaiz(pos) {
+        return new Maiz(position= pos)
     }
-    method crearTrigo() {
-        return new Trigo()
+    method crearTrigo(pos) {
+        return new Trigo(position=pos)
     }
-    method crearTomaco() {
-        return new Tomaco()
+    method crearTomaco(pos) {
+        return new Tomaco(position=pos)
     }
 }
 
 class Maiz {
-	var property position = personaje.position()
-	var estado = bebe
+	var property position 
+	var    estado = bebe
 	const precio = 150 
 	method precio() {
 	  return precio
 	}
 	
 	method esRegada() {
-	  estado.regar()
-	}
-	
-
-
-	//----  REGAR
-	
+		estado = estado.siguienteEstadoAlRegar()
+    }
 
 
 	//-------------- estado   ---------
 	method image() {
 	  return "corn_" + estado.image()
 	}
-	var property esBebe = false
-	method estado() {
-	  return	if ( esBebe) estado = bebe
-	  	     	else estado = adult	
-	}
+	
 
 	method esAdulto() {
-	  return !esBebe
+	  return   estado.esCosechable() //not esBebe
 	}
 	method puedeSerCosechada() {
 	  return self.esAdulto() 
@@ -58,13 +49,14 @@ class Maiz {
 
 object bebe {
 	var  property image = "baby.png" 
-	method regar() {
-	  image = "adult.png"
-	}
+	
 	method esCosechable() {
 	  return false
 	
 	}
+	method siguienteEstadoAlRegar() {
+        return adult
+    }
 }
 
 object adult {
@@ -72,9 +64,10 @@ object adult {
 	method esCosechable() {
 	  return true
 	}
-	method regar() {
-	  image = "baby.png"
-	}
+	method siguienteEstadoAlRegar() {
+        return bebe
+    }
+	
 }
 
 //-------------------------------------------------
@@ -82,7 +75,7 @@ class Trigo {
 	var evolucion = 0
 	const property precio = (evolucion - 1) * 100
 
-	var property position = personaje.position()  
+	var property position 
 	method image() {
 		return "wheat_" + evolucion + ".png"
 	}
@@ -106,7 +99,7 @@ class Trigo {
 
 //---------------------------------------------
 class Tomaco {
-	var property position = personaje.position()  
+	var property position 
 	const property precio = 80
 	method image() {
 		return "tomaco_baby.png"

@@ -19,9 +19,9 @@ program farmville {
     keyboard.left().onPressDo({personaje.mover(izquierda)})
     keyboard.right().onPressDo({personaje.mover(derecha)})
 	
-	keyboard.m().onPressDo {  personaje.sembrar( cultivoFactory.crearMaiz())  }
-	keyboard.t().onPressDo {  personaje.sembrar( cultivoFactory.crearTrigo()) }
-	keyboard.o().onPressDo {  personaje.sembrar( cultivoFactory.crearTomaco())}	
+	keyboard.m().onPressDo {  personaje.sembrar( cultivoFactory.crearMaiz(personaje.position() ))  }
+	keyboard.t().onPressDo {  personaje.sembrar( cultivoFactory.crearTrigo(personaje.position())) }
+	keyboard.o().onPressDo {  personaje.sembrar( cultivoFactory.crearTomaco(personaje.position()))}	
 
 	keyboard.r().onPressDo {  personaje.regar( personaje.plantaAca() )}
 

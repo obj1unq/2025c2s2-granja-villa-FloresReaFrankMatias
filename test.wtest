@@ -2,42 +2,37 @@ import cultivos.*
 import personaje.*
 import wollok.game.*
 import direcciones.*
+import aspersor.*
 
 //---------------------   TEST SEMBRADO  ----------------------
 describe "Test de Sembrado" {
   
   test "Sembrar Maiz" {
-    personaje.sembrar(cultivoFactory.crearMaiz())
-    assert.that(personaje.hayPlantaEn( personaje.position() ))
+    personaje.sembrar(cultivoFactory.crearMaiz( personaje.position() ))
+    assert.that(personaje.hayPlantaEn( personaje.position() ) )
   }
    test "Sembrar Tomaco" {
-    personaje.sembrar(cultivoFactory.crearTomaco())
+    personaje.sembrar(cultivoFactory.crearTomaco(personaje.position()))
     assert.that(personaje.hayPlantaEn( personaje.position() )) 
   }
    test "Sembrar Trigo" {
-    personaje.sembrar(cultivoFactory.crearTrigo())
+    personaje.sembrar(cultivoFactory.crearTrigo(personaje.position()))
     assert.that(personaje.hayPlantaEn( personaje.position() )) 
   }
   test "sembrar en lugar ocupado" {
-    personaje.sembrar(cultivoFactory.crearMaiz() )
-    assert.throwsException({ personaje.sembrar(cultivoFactory.crearTomaco()) })
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )
+    assert.throwsException({ personaje.sembrar(cultivoFactory.crearTomaco(personaje.position())) })
 
   }
 }
 
 //--------------       TEST COSECHAS           ---------------------
 describe "Test de Cosecha" {
-  //lo puse como var global para que no me tire error de variable no definida y despues lo inicializo en el initialize
-    var maiz
-    var trigo
-    var tomaco  
-    method initialize() {
-       maiz = cultivoFactory.crearMaiz()
-       trigo = cultivoFactory.crearTrigo()
-       tomaco = cultivoFactory.crearTomaco()
-    }
+   
     test "Cosechar maiz adulto" {
+        
         personaje.position( game.at(1,1) )
+        const maiz = cultivoFactory.crearMaiz(personaje.position())
         assert.equals(game.at(1,1), personaje.position())
         personaje.sembrar(maiz)
         personaje.regar( personaje.plantaAca() )
@@ -45,7 +40,9 @@ describe "Test de Cosecha" {
         assert.equals(#{maiz}, personaje.cosecha()  )
     }
     test "Cosechar trigo evolucion 2" {
+         
         personaje.position( game.at(2,1) )
+        const trigo = cultivoFactory.crearTrigo(personaje.position())
         assert.equals(game.at(2,1), personaje.position())
         personaje.sembrar(trigo)
         personaje.regar( personaje.plantaAca() )
@@ -54,35 +51,45 @@ describe "Test de Cosecha" {
         assert.equals(#{trigo}, personaje.cosecha()  )
     }
     test "Cosechar tomaco" {
+        
         personaje.position( game.at(3,1) )
+        const tomaco = cultivoFactory.crearTomaco(personaje.position())
         assert.equals(game.at(3,1), personaje.position())
         personaje.sembrar(tomaco)
-       
-        personaje.position( game.at(4,1) )
+        
         personaje.cosechar()
         assert.equals(#{tomaco}, personaje.cosecha()  )
     }   
+   
+    test "Cosechar sin planta" {
+      personaje.position( game.at(1,1) )
+      assert.throwsException({ personaje.cosechar() })
+}
+test "Cosechar planta que no puede ser cosechada" {
+    personaje.position(game.at(1,1))
+    const maiz = cultivoFactory.crearMaiz(personaje.position())
+    personaje.sembrar(maiz)
+
+    assert.throwsException({ personaje.cosechar() })
+}
+
+
 }
 
 
 //---------------------    Ventas     --------------  
 describe "Vender Cosechas" {
-   var maiz
-    var trigo
-    var tomaco  
-    method initialize() {
-       maiz = cultivoFactory.crearMaiz()
-       trigo = cultivoFactory.crearTrigo()
-       tomaco = cultivoFactory.crearTomaco()
-    }
+   
     test "vender 1 maiz adulto, trigo de evolucion 2 y 1 tomaco" {
         personaje.position( game.at(1,1) )
         assert.equals(game.at(1,1), personaje.position())
+        const maiz = cultivoFactory.crearMaiz(personaje.position())
         personaje.sembrar(maiz )
         personaje.regar( personaje.plantaAca() )
         personaje.cosechar()
         // 150 monedas por el maiz
         personaje.position( game.at(2,1) )
+        const trigo = cultivoFactory.crearTrigo(personaje.position())
         personaje.sembrar(trigo )
         personaje.regar(personaje.plantaAca() )
         personaje.regar(personaje.plantaAca() )
@@ -91,8 +98,8 @@ describe "Vender Cosechas" {
         //100 monedas por el trigo de evolucion 2
         
         personaje.position( game.at(3,1) )
+        const tomaco = cultivoFactory.crearTomaco(personaje.position())
         personaje.sembrar(tomaco )
-        personaje.position( game.at(4,1) )
         personaje.cosechar()
         //80 por el tomaco
         personaje.vender()
@@ -112,20 +119,20 @@ describe "Vender Cosechas" {
 describe "Test de Regado" {
   
   test "Regar maiz 1 vez" {
-    var maiz = cultivoFactory.crearMaiz()
+    const maiz = cultivoFactory.crearMaiz(personaje.position())
     personaje.sembrar(maiz)
     personaje.regar( personaje.plantaAca() )
     assert.equals("corn_adult.png", maiz.image() )
   }
    test "Regar  trigo 2 veces" {
-    const trigo = cultivoFactory.crearTrigo()
+    const trigo = cultivoFactory.crearTrigo(personaje.position())
     personaje.sembrar(trigo)
     personaje.regar( personaje.plantaAca() )
     personaje.regar( personaje.plantaAca() )
     assert.equals("wheat_2.png", trigo.image() ) 
   }
    test "Regar trigo 3 veces" {
-    const trigo = cultivoFactory.crearTrigo()
+    const trigo = cultivoFactory.crearTrigo(personaje.position())
     personaje.sembrar(trigo)
     personaje.regar( personaje.plantaAca() )
     personaje.regar( personaje.plantaAca() )
@@ -133,14 +140,14 @@ describe "Test de Regado" {
     assert.equals("wheat_3.png", trigo.image() ) 
   }
   test "Regar tomaco 1 vez" {
-    const tomaco = cultivoFactory.crearTomaco()
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
     personaje.regar( personaje.plantaAca() )
     personaje.mover(arriba)
     assert.equals(personaje.position(  ) , tomaco.position()  ) 
   }
   test "Regar tomaco 2 veces" {
-    const tomaco = cultivoFactory.crearTomaco()
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
     personaje.regar( personaje.plantaAca() )
     personaje.mover(arriba)
@@ -149,8 +156,9 @@ describe "Test de Regado" {
     assert.equals( personaje.position() , tomaco.position()  ) 
   }
   test "Regar tomaco 3 veces" {
-    const tomaco = cultivoFactory.crearTomaco()
+    
     personaje.position(game.origin())
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
     personaje.regar( personaje.plantaAca() )
     personaje.mover(arriba)
@@ -165,5 +173,49 @@ describe "Test de Regado" {
   }
 }
 
+//---------------------   TEST ASPERSORES  ----------------------
+describe "Test de Aspersores" {
 
+  test "Plantar Aspersor" {
+    personaje.colocarAspersor()
+    assert.equals(1, aspersores.aspersoresTotales().size() )
+  }
 
+  
+  
+  test "sembrar cuatro maices y plantar un aspersor en el medio" {
+    
+    
+    const m1 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(4,3))
+    personaje.sembrar(m1)
+    assert.equals("corn_baby.png", m1.image())
+
+    const m2 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(2,3))
+    personaje.sembrar(m2)
+    assert.equals("corn_baby.png", m2.image())
+
+    const m3 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(3,4))
+    personaje.sembrar(m3)
+    assert.equals("corn_baby.png", m3.image())
+    
+    const m4 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(3,2))
+    personaje.sembrar(m4)
+    assert.equals("corn_baby.png", m4.image())
+  
+    personaje.position(game.at(3,3))
+    personaje.colocarAspersor()
+    aspersores.activarAspersores()  
+
+    //
+    assert.equals("corn_adult.png", m2.image())
+    assert.equals("corn_adult.png", m3.image())
+    assert.equals("corn_adult.png", m4.image())
+    assert.equals("corn_adult.png", m1.image())
+    assert.equals(4, personaje.cultivos().size())
+}
+
+}

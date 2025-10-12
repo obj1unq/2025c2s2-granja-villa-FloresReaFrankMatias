@@ -26,10 +26,11 @@ object personaje {
 	  	planta.esRegada()
 	}
 	method cosechar() {
-	  	self.validadCosechaDe(self.plantaAca())
+		const cultivo = self.plantaAca()
+	  	self.validadCosechaDe(cultivo)
 		game.removeVisual(self.plantaAca())
-		cosecha.add(self.plantaAca() )
-		cultivos.remove(self.plantaAca() )
+		cosecha.add(cultivo )
+		cultivos.remove(cultivo )
 	}
 	method vender() {
 	  monedasDeOro = cosecha.sum{ planta => planta.precio() }
@@ -65,9 +66,12 @@ object personaje {
 	  }
 	}
 	method validadCosechaDe(planta) {
-	  if( not (self.hayPlantaAca() && planta.puedeSerCosechada())  ){
-		self.error(" No tengo nada para cosechar ")
-	  }
+	  if (planta == null) {
+        self.error("No hay ninguna planta para cosechar")
+    }
+    if (not planta.puedeSerCosechada()) {
+        self.error("La planta aún no  esta lista para cosechar")
+    }
 	}
 
 
@@ -85,6 +89,9 @@ object personaje {
 		//retorna is hay una plnata en una pos por parametro
 	  return  cultivos.any({ planta => planta.position() == pos })
 	}
-	
+	method plantasEn(posicion){
+        return game.getObjectsIn(posicion).filter({obj => cultivos.contains(obj)})
+    }
+
 
 }
