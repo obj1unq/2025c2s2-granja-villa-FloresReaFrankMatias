@@ -105,20 +105,23 @@ class Tomaco {
 		return "tomaco_baby.png"
 	}
 	
-	method esRegado() {
-		if(position.up(1).y() != game.height() && game.getObjectsIn(position.up(1)).isEmpty() ){
-				position = position.up(1)
-		} else {
-			position = game.at(position.x(), 0)
-		}
-	}
+	//method esRegada2() {
+	//	if(position.up(1).y() != game.height() && game.getObjectsIn(position.up(1)).isEmpty() ){
+	//			position = position.up(1)
+	//	} else {
+	//		position = game.at(position.x(), 0)
+	//	}
+	//}
 	method esRegada() {
-		if (not (position.y() == game.height() - 1) && not personaje.hayPlantaEn(position.up(1)) ) {
+		
+		self.validarMoverTomaco(position.up(1), position.down(game.height() - 1)  )
+		if (not (position.y() == game.height() - 1)  ) {
 			position = position.up(1)
 		}
 		else {
 			position = position.down(game.height() - 1)
 		}
+		
 	}
 	
 	method puedeSerCosechada() {
@@ -126,6 +129,14 @@ class Tomaco {
 	}
 	method esCosechada() {
 	  game.removeVisual(self)
+	}
+	method validarMoverTomaco(pos1,pos2) {
+	  if( not game.getObjectsIn(pos1).isEmpty() ){ //personaje.hayPlantaEn(pos1)   ){
+			self.error("No puedo ser regada")	
+	  }
+	  if( not game.getObjectsIn(pos2).isEmpty()  ){ //personaje.hayPlantaEn(pos2)
+		self.error("No puedo ser regada ")
+	  }
 	}
 }
 

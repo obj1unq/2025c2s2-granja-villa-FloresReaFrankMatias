@@ -17,7 +17,7 @@ object personaje {
         position = direccion.siguiente(position)
     }
 	method sembrar(semilla) {
-	  	self.validarSembrar(semilla)
+	  	self.validarPlantar()
 		game.addVisual(semilla)
 		cultivos.add(semilla)
 		
@@ -36,17 +36,17 @@ object personaje {
 	}
 	method vender() {
 		self.validarVenta()	
-		mercados.mercandoEn(position).comprarMercaderia(self.valorDeCosechaTotal())
+		mercados.mercadoEn(position).comprarMercaderia(self.valorDeCosechaTotal())
 		monedasDeOro += self.valorDeCosechaTotal()
 	  	cosecha.clear()
 	}
 	method oroTotal() {
 	  game.say(self,"Tengo"  + monedasDeOro + "mondeas de oro y" + cosecha.size()+" plantas para vender")
 	}
-		method colocarAspersor() {
-			self.validarSembrar(self.position())
-			aspersores.plantarAspersor()
-			//aspersor.regarAspersor()
+	method colocarAspersor() {
+		self.validarPlantar()
+		aspersores.plantarAspersor()
+			
 		}
 
 	method puedeRegarse() {
@@ -70,9 +70,9 @@ object personaje {
 
 
 //---------------      Validadores     -----------------------
-	method validarSembrar(semilla) {
-		if( self.hayPlantaAca() ){
-			self.error("Hay una planta aca")
+	method validarPlantar() {
+		if( self.hayPlantaAca() || self.estaSobreUnMercado()  || self.estaSobreUnAspersor()  ){
+			self.error("No se puede planta aca")
 		}  
 	}
 	method validadRegar(semilla) {
@@ -115,6 +115,9 @@ object personaje {
 	method estaSobreUnMercado() {
 		return mercados.hayMercadoEn(position)
 	
+	}
+	method estaSobreUnAspersor() {
+	  return aspersores.hayAspersorEn(position)
 	}
 
 }

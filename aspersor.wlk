@@ -11,10 +11,16 @@ object aspersores {
 
     method plantarAspersor() {
         const aspersor = aspersorFactory.crearAspersor()
+        
         aspersoresTotales.add(aspersor)
         game.addVisual(aspersor)
       
     }
+    method hayAspersorEn(position){
+        return game.getObjectsIn(position).any({obj => aspersoresTotales.contains(obj)})
+    }
+  
+    
 
 }
 object aspersorFactory {
@@ -48,17 +54,13 @@ class Aspersor {
           position.down(1).left(1)
         ]
         posicionesARegar.forEach({pos =>
-          game.getObjectsIn(pos).forEach({objeto => objeto.esRegada()})
+          personaje.plantasEn(pos).forEach({planta => planta.esRegada()})
         })
       //game.getObjectsIn(position.up(1)).forEach({objeto => objeto.esRegada()})
       //game.getObjectsIn(position.right(1)).forEach({objeto => objeto.esRegada()})
       //game.getObjectsIn(position.down(1)).forEach({objeto => objeto.esRegada()})
       //game.getObjectsIn(position.left(1)).forEach({objeto => objeto.esRegada()})
   }
-  method planta() {
-    return false
-  }
-
   method puedeRegarse() {
     return false
   }

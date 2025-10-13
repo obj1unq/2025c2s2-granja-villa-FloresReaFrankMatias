@@ -13,7 +13,7 @@ object mercados{
         return game.getObjectsIn(position).any({obj => mercadosTotales.contains(obj)})
     }
 
-    method mercandoEn(position){
+    method mercadoEn(position){
         return game.getObjectsIn(position).filter({obj => mercadosTotales.contains(obj)}).get(0)
     }
 
@@ -56,7 +56,7 @@ class Mercado {
 
 	}
 	method textColor() {
-	  return "FF0000FF"
+	  return "000000"
 	}
 
 }
