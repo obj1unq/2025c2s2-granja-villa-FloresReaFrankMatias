@@ -33,15 +33,15 @@ object personaje {
 		cultivos.remove(cultivo )
 	}
 	method vender() {
-	  monedasDeOro = cosecha.sum{ planta => planta.precio() }
-	  cosecha.clear()
+		self.validarVenta()	
+		monedasDeOro = cosecha.sum{ planta => planta.precio() }
+	  	cosecha.clear()
 	}
 	method oroTotal() {
 	  game.say(self,"Tengo"  + monedasDeOro + "mondeas de oro y" + cosecha.size()+" plantas para vender")
 	}
 		method colocarAspersor() {
 			self.validarSembrar(self.position())
-			
 			aspersores.plantarAspersor()
 			//aspersor.regarAspersor()
 		}
@@ -52,6 +52,8 @@ object personaje {
 
 	method esRegada() {
 	}
+
+	
 
 
 //---------------      Validadores     -----------------------
@@ -66,14 +68,19 @@ object personaje {
 	  }
 	}
 	method validadCosechaDe(planta) {
-	  if (planta == null) {
-        self.error("No hay ninguna planta para cosechar")
-    }
-    if (not planta.puedeSerCosechada()) {
-        self.error("La planta aún no  esta lista para cosechar")
-    }
+	  	if (planta == null) {
+    		self.error("No hay ninguna planta para cosechar")
+    	}
+    	if (not planta.puedeSerCosechada()) {
+        	self.error("La planta aún no  esta lista para cosechar")
+    	}
 	}
 
+	method validarVenta(){
+		if( not self.estaSobreUnMercado()){
+			self.error("No estoy sobre un mercado")
+		}
+	}
 
 
 //------------------------    consultas   -------
@@ -92,6 +99,10 @@ object personaje {
 	method plantasEn(posicion){
         return game.getObjectsIn(posicion).filter({obj => cultivos.contains(obj)})
     }
-
+	method estaSobreUnMercado() {
+	  
+		//return self.position != mercados.any()
+	return true
+	}
 
 }

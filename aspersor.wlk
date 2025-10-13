@@ -1,26 +1,9 @@
-//import wollok.game.*
-//import personaje.*
-//
-//object aspersorFactory {
-//    const property aspersores = []
-//    method crearAspersor() {
-//        const aspersor = new Aspersor(position= personaje.position())
-//        game.addVisual(aspersor)
-//        aspersores.add(aspersor)
-//        
-//    }
-//
-//    method aspersoresRegar(){
-//        aspersores.forEach({aspersor => aspersor.regarPerimetro()})
-//    
-//    }
-//
-//}
+
 import wollok.game.*
 import personaje.*
 
 object aspersores {
-    var property aspersoresTotales = #{}
+    const    property aspersoresTotales = #{}
 
     method activarAspersores() {
       aspersoresTotales.forEach({asp => asp.regarLimitrofes()})
@@ -38,7 +21,6 @@ object aspersorFactory {
     method crearAspersor() {
         return  new Aspersor(position= personaje.position() )
         
-        //return asp
     }
    
 }

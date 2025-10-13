@@ -10,20 +10,35 @@ describe "Test de Sembrado" {
   test "Sembrar Maiz" {
     personaje.sembrar(cultivoFactory.crearMaiz( personaje.position() ))
     assert.that(personaje.hayPlantaEn( personaje.position() ) )
+    assert.that( personaje.cultivos().size()==1 )
   }
    test "Sembrar Tomaco" {
     personaje.sembrar(cultivoFactory.crearTomaco(personaje.position()))
     assert.that(personaje.hayPlantaEn( personaje.position() )) 
+    assert.that( personaje.cultivos().size()==1 )
   }
-   test "Sembrar Trigo" {
-    personaje.sembrar(cultivoFactory.crearTrigo(personaje.position()))
-    assert.that(personaje.hayPlantaEn( personaje.position() )) 
-  }
-  test "sembrar en lugar ocupado" {
+ 
+  test "sembrar en lugar ocupado por otro cultivo" {
     personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )
     assert.throwsException({ personaje.sembrar(cultivoFactory.crearTomaco(personaje.position())) })
-
+    assert.that( personaje.cultivos().size()==1 )
   }
+  test "Sembrar 3 cultivos en distintas posiciones"{
+    personaje.position(game.at(1,1))
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )  
+    personaje.position(game.at(2,1))
+    personaje.sembrar(cultivoFactory.crearTrigo(personaje.position()))
+    personaje.position(game.at(3,1))
+    personaje.sembrar(cultivoFactory.crearTomaco(personaje.position()))
+    assert.that( personaje.cultivos().size()==3 )
+  }
+  test "Sembrar 2 cultivos en la misma posicion" {
+    const trigo =cultivoFactory.crearTrigo(personaje.position())
+    personaje.position(game.at(1,1))
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )  
+    assert.throwsException({ personaje.sembrar(trigo) })
+  }
+  
 }
 
 //--------------       TEST COSECHAS           ---------------------

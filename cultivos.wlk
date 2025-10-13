@@ -65,7 +65,7 @@ object adult {
 	  return true
 	}
 	method siguienteEstadoAlRegar() {
-        return bebe
+        return self
     }
 	
 }

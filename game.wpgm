@@ -3,6 +3,8 @@ import wollok.game.*
 import personaje.*
 import cultivos.*
 import direcciones.*
+import mercado.*
+
 
 program farmville {
 	//  CONFIG	
@@ -12,7 +14,7 @@ program farmville {
 	game.ground("ground.png")
 
 	//  VISUALES
- 	game.addVisual(personaje)
+ 	
  	// game.addVisual(new Maiz()) // Se agrega a modo de prueba
  	keyboard.up().onPressDo({personaje.mover(arriba)})
     keyboard.down().onPressDo({personaje.mover(abajo)})
@@ -35,6 +37,14 @@ program farmville {
 	keyboard.a().onPressDo {  personaje.colocarAspersor() }
 	//game.onTick(1000, "riego", { personaje.} )
 	game.onTick(1000, "regarLimitrofes", { aspersores.activarAspersores()  } )
+
+	game.addVisual( mercadoFactory.crear( game.at(0,0)) )
+	game.addVisual( mercadoFactory.crear( game.at(0,9)) )
+	game.addVisual( mercadoFactory.crear( game.at(9,0)) )
+	game.addVisual(personaje)
  	//  COMIENZA
+
+
+
 	game.start()
 }
