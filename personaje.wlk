@@ -35,8 +35,9 @@ object personaje {
 		cultivos.remove(cultivo )
 	}
 	method vender() {
-		self.validarVenta()	
+		//self.validarVenta()	
 		monedasDeOro = cosecha.sum{ planta => planta.precio() }
+		
 	  	cosecha.clear()
 	}
 	method oroTotal() {
@@ -58,6 +59,14 @@ object personaje {
 	method valorDeCosechaTotal(){
 		return cosecha.sum{ planta => planta.precio() }
 	}	
+
+	method text() {
+	  return monedasDeOro.toString()
+
+	}
+	method textColor() {
+	  return "FF0000FF"
+	}
 
 
 //---------------      Validadores     -----------------------
@@ -106,7 +115,7 @@ object personaje {
 	method estaSobreUnMercado() {
 	  
 		//return self.position != mercados.any()
-	return self.position() == mercados.mercadosTotales.any( { m => m.position() } )
+	return mercados.mercadosTotales.any( { m => m.position() == self.position() } )
 	}
 
 }

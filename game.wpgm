@@ -42,6 +42,7 @@ program farmville {
 	mercados.nuevoMercado( game.at(0,0)  )
 	mercados.nuevoMercado( game.at(9,0)  )
 	mercados.nuevoMercado( game.at(0,9)  )
+	game.addVisual(personaje)
  	
 	//  COMIENZA
 

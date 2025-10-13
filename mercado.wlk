@@ -31,7 +31,8 @@ class Mercado {
 
     method comprarMercaderia(valorCompra) {
       self.validarCompra()
-      mercaderia.addAll(personaje.)
+      monedas -=  personaje.valorDeCosechaTotal()
+      mercaderia.addAll(personaje.cosecha())
     }
   
   method validarCompra() {
