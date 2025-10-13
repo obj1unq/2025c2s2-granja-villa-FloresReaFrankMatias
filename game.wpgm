@@ -15,7 +15,6 @@ program farmville {
 
 	//  VISUALES
  	
- 	// game.addVisual(new Maiz()) // Se agrega a modo de prueba
  	keyboard.up().onPressDo({personaje.mover(arriba)})
     keyboard.down().onPressDo({personaje.mover(abajo)})
     keyboard.left().onPressDo({personaje.mover(izquierda)})
@@ -38,11 +37,13 @@ program farmville {
 	//game.onTick(1000, "riego", { personaje.} )
 	game.onTick(1000, "regarLimitrofes", { aspersores.activarAspersores()  } )
 
-	game.addVisual( mercadoFactory.crear( game.at(0,0)) )
-	game.addVisual( mercadoFactory.crear( game.at(0,9)) )
-	game.addVisual( mercadoFactory.crear( game.at(9,0)) )
-	game.addVisual(personaje)
- 	//  COMIENZA
+	
+
+	mercados.nuevoMercado( game.at(0,0)  )
+	mercados.nuevoMercado( game.at(9,0)  )
+	mercados.nuevoMercado( game.at(0,9)  )
+ 	
+	//  COMIENZA
 
 
 

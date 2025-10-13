@@ -2,6 +2,8 @@ import wollok.mirror.*
 import wollok.game.*
 import direcciones.*
 import aspersor.*
+import mercado.*
+
 object personaje {
 	var  property position = game.center()
 	const property image = "fplayer.png"
@@ -53,7 +55,9 @@ object personaje {
 	method esRegada() {
 	}
 
-	
+	method valorDeCosechaTotal(){
+		return cosecha.sum{ planta => planta.precio() }
+	}	
 
 
 //---------------      Validadores     -----------------------
@@ -102,7 +106,7 @@ object personaje {
 	method estaSobreUnMercado() {
 	  
 		//return self.position != mercados.any()
-	return true
+	return self.position() == mercados.mercadosTotales.any( { m => m.position() } )
 	}
 
 }
