@@ -28,8 +28,9 @@ object personaje {
 	  	planta.esRegada()
 	}
 	method cosechar() {
+
+	  	self.validarCosecha()
 		const cultivo = self.plantaAca()
-	  	self.validadCosechaDe(cultivo)
 		game.removeVisual(self.plantaAca())
 		cosecha.add(cultivo )
 		cultivos.remove(cultivo )
@@ -41,7 +42,7 @@ object personaje {
 	  	cosecha.clear()
 	}
 	method oroTotal() {
-	  game.say(self,"Tengo"  + monedasDeOro + "mondeas de oro y" + cosecha.size()+" plantas para vender")
+	  game.say(self,"Tengo "+ " "+ + monedasDeOro + " "+ "de oro y  " +" "+ cosecha.size()+  " "+" plantas ")
 	}
 	method colocarAspersor() {
 		self.validarPlantar()
@@ -80,11 +81,11 @@ object personaje {
 		self.error("No hay planta para regar")
 	  }
 	}
-	method validadCosechaDe(planta) {
-	  	if (planta == null) {
+	method validarCosecha() {
+	  	if (  not self.hayPlantaAca() ) {
     		self.error("No hay ninguna planta para cosechar")
     	}
-    	if (not planta.puedeSerCosechada()) {
+    	if (not self.plantaAca().puedeSerCosechada()) {
         	self.error("La planta aún no  esta lista para cosechar")
     	}
 	}
