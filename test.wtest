@@ -1,3 +1,4 @@
+import mercado.*
 import cultivos.* 
 import personaje.*
 import wollok.game.*
@@ -92,43 +93,7 @@ test "Cosechar planta que no puede ser cosechada" {
 }
 
 
-//---------------------    Ventas     --------------  
-describe "Vender Cosechas" {
-   
-    test "vender 1 maiz adulto, trigo de evolucion 2 y 1 tomaco" {
-        personaje.position( game.at(1,1) )
-        assert.equals(game.at(1,1), personaje.position())
-        const maiz = cultivoFactory.crearMaiz(personaje.position())
-        personaje.sembrar(maiz )
-        personaje.regar( personaje.plantaAca() )
-        personaje.cosechar()
-        // 150 monedas por el maiz
-        personaje.position( game.at(2,1) )
-        const trigo = cultivoFactory.crearTrigo(personaje.position())
-        personaje.sembrar(trigo )
-        personaje.regar(personaje.plantaAca() )
-        personaje.regar(personaje.plantaAca() )
-        personaje.cosechar()
 
-        //100 monedas por el trigo de evolucion 2
-        
-        personaje.position( game.at(3,1) )
-        const tomaco = cultivoFactory.crearTomaco(personaje.position())
-        personaje.sembrar(tomaco )
-        personaje.cosechar()
-        //80 por el tomaco
-        personaje.vender()
-        assert.equals(#{}, personaje.cosecha()  )
-        assert.equals(330, personaje.monedas())            
-
-
-    }
-    
-    test "vender sin tener cosecha" {
-        personaje.vender()
-        assert.equals(0, personaje.monedas())            
-    }
-}
 
 //---------------------   TEST REGADO  ----------------------
 describe "Test de Regado" {
@@ -232,5 +197,81 @@ describe "Test de Aspersores" {
     assert.equals("corn_adult.png", m1.image())
     assert.equals(4, personaje.cultivos().size())
 }
+
+  test " test aspersores con tomaco"{
+    personaje.position(game.at(5,5))
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
+    personaje.sembrar(tomaco)
+    assert.equals("tomaco_baby.png", tomaco.image())
+    personaje.position(game.at(4,4))
+    personaje.colocarAspersor()
+    aspersores.activarAspersores()  
+    assert.equals(game.at(5,5), tomaco.position())
+    assert.equals("tomaco_baby.png", tomaco.image())
+    aspersores.activarAspersores()  
+    assert.equals(game.at(4,0), tomaco.position())
+    assert.equals("tomaco_baby.png", tomaco.image())
+  }
+
+}
+
+
+
+//---------------  TEST MERCADOS
+
+
+
+describe "Test Mercados" {
+  var maiz
+  var trigo
+  var tomaco
+  method initialize(){
+    personaje.position( game.at(1,1) )
+        assert.equals(game.at(1,1), personaje.position())
+         maiz = cultivoFactory.crearMaiz(personaje.position())
+        personaje.sembrar(maiz )
+        personaje.regar( personaje.plantaAca() )
+        personaje.cosechar()
+        // 150 monedas por el maiz
+        personaje.position( game.at(2,1) )
+         trigo = cultivoFactory.crearTrigo(personaje.position())
+        personaje.sembrar(trigo )
+        personaje.regar(personaje.plantaAca() )
+        personaje.regar(personaje.plantaAca() )
+        personaje.cosechar()
+
+        //100 monedas por el trigo de evolucion 2
+        
+        personaje.position( game.at(3,1) )
+         tomaco = cultivoFactory.crearTomaco(personaje.position())
+        personaje.sembrar(tomaco )
+        personaje.cosechar()
+        //80 por el tomaco
+  }
+  test " Test de venta exitoso"{
+    mercados.plantarMercados()
+    personaje.position(game.at(0,0))
+    assert.equals(game.at(0,0), personaje.position()) 
+    assert.that(  mercados.hayMercadoEn(personaje.position()) )
+    personaje.vender()
+    assert.equals(#{}, personaje.cosecha())
+    assert.equals(330, personaje.monedas())
+    assert.equals(670, mercados.mercandoEn(personaje.position()).monedas()) 
+    assert.equals(#{maiz,trigo,tomaco}, mercados.mercandoEn(personaje.position()).mercaderia()) 
+  }
+
+  test " Test: moneda insuficiente para comprar"{
+        mercados.plantarMercados()
+        personaje.position( game.at(0,9) )
+        assert.equals(game.at(0,9), personaje.position())
+        assert.throwsException({ personaje.vender() })
+
+  } 
+  test " Test: vender sin estar en un mercado"{
+        personaje.position( game.at(1,1) )
+        assert.equals(game.at(1,1), personaje.position())
+        assert.throwsException({ personaje.vender() })
+
+  }
 
 }

@@ -35,9 +35,9 @@ object personaje {
 		cultivos.remove(cultivo )
 	}
 	method vender() {
-		//self.validarVenta()	
-		monedasDeOro = cosecha.sum{ planta => planta.precio() }
-		
+		self.validarVenta()	
+		mercados.mercandoEn(position).comprarMercaderia(self.valorDeCosechaTotal())
+		monedasDeOro += self.valorDeCosechaTotal()
 	  	cosecha.clear()
 	}
 	method oroTotal() {
@@ -113,9 +113,8 @@ object personaje {
         return game.getObjectsIn(posicion).filter({obj => cultivos.contains(obj)})
     }
 	method estaSobreUnMercado() {
-	  
-		//return self.position != mercados.any()
-	return mercados.mercadosTotales.any( { m => m.position() == self.position() } )
+		return mercados.hayMercadoEn(position)
+	
 	}
 
 }
