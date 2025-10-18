@@ -11,11 +11,9 @@ object personaje {
 	const property cosecha = #{}
 	var monedasDeOro = 0
 	
-	method monedas() = monedasDeOro
+	method monedas()       {    return monedasDeOro                      } 
+	method mover(direccion){    position = direccion.siguiente(position) }
 	
-	method mover(direccion){
-        position = direccion.siguiente(position)
-    }
 	method sembrar(semilla) {
 	  	self.validarPlantar()
 		game.addVisual(semilla)
@@ -28,7 +26,6 @@ object personaje {
 	  	planta.esRegada()
 	}
 	method cosechar() {
-
 	  	self.validarCosecha()
 		const cultivo = self.plantaAca()
 		game.removeVisual(self.plantaAca())
@@ -46,33 +43,20 @@ object personaje {
 	}
 	method colocarAspersor() {
 		self.validarPlantar()
-		aspersores.plantarAspersor()
-			
+		aspersores.plantarAspersor()	
 		}
 
-	method puedeRegarse() {
-	  return false
-	}
-
-	method esRegada() {
-	}
-
-	method valorDeCosechaTotal(){
-		return cosecha.sum{ planta => planta.precio() }
-	}	
-
-	method text() {
-	  return monedasDeOro.toString()
-
-	}
-	method textColor() {
-	  return "FF0000FF"
-	}
+	method valorDeCosechaTotal(){	return cosecha.sum{ planta => planta.precio() }}	
+	method puedeRegarse()       {	return false                                   }
+	method esRegada()           { }                                                
+	method text()               {	return monedasDeOro.toString()                 }
+	method textColor()          { return "FF0000FF"			                       }
 
 
 //---------------      Validadores     -----------------------
 	method validarPlantar() {
-		if( self.hayPlantaAca() || self.estaSobreUnMercado()  || self.estaSobreUnAspersor()  ){
+			//if(self.hayPlantaAca() || self.estaSobreUnMercado()  || self.estaSobreUnAspersor()  ){
+		if(  not game.colliders(self).isEmpty() ){ 
 			self.error("No se puede planta aca")
 		}  
 	}
@@ -97,7 +81,7 @@ object personaje {
 	}
 
 
-//------------------------    consultas   -------
+//------------------------       -------
 	method hayPlantaAca() {
 		//consulta si en la poscicion del personaje hay una planta
 	  return  cultivos.any({ planta => planta.position() == position })
@@ -110,7 +94,7 @@ object personaje {
 		//retorna is hay una plnata en una pos por parametro
 	  return  cultivos.any({ planta => planta.position() == pos })
 	}
-	method plantasEn(posicion){
+	method plantaEn(posicion){
         return game.getObjectsIn(posicion).filter({obj => cultivos.contains(obj)})
     }
 	method estaSobreUnMercado() {
