@@ -5,60 +5,47 @@ import personaje.*
 object aspersores {
     const    property aspersoresTotales = #{}
 
-    method activarAspersores()    {   aspersoresTotales.forEach({asp => asp.regarLimitrofes()})                         }
-    method hayAspersorEn(position){   return game.getObjectsIn(position).any({obj => aspersoresTotales.contains(obj)})  }
+    method activarAspersores()    {   aspersoresTotales.forEach({aspersor=> aspersor.regarLimitrofes()})                         }
+    
+    // este metodo no lo uso en ningun lado
+    //method hayAspersorEn(position){   return game.getObjectsIn(position).any({obj => aspersoresTotales.contains(obj)})  }
 
-    method plantarAspersor() {
-        const aspersor = aspersorFactory.crearAspersor()
+    method instalarAspersor(posicionAInstalar) {
+        const aspersor = aspersorFactory.crearAspersor(posicionAInstalar)
         aspersoresTotales.add(aspersor)
         game.addVisual(aspersor)
+    }
+    method iniciarRiego(){
+      game.onTick(1000, "regarLimitrofes", { self.activarAspersores()  } )
     }
 }
 
 //----------------------------------------------------------------
 object aspersorFactory {
-    method crearAspersor() {      return  new Aspersor(position= personaje.position() )  }
+    method crearAspersor(posicionAInstalar) {  return  new Aspersor(position= posicionAInstalar )  }
 }
-
 //----------------------------------------------------------------
-
 class Aspersor {
   var property position
   method image() {  return "aspersor.png"}
 
 
-  method regarLimitrofes() {  
-    const posLimitrofes= [
-        //pos ortogonales
-      position.up(1),
-      position.right(1),
-      position.down(1),
-      position.left(1),
-      // posiciones diagonales
-      position.up(1).right(1),
-      position.up(1).left(1),
-      position.down(1).right(1),
-      position.down(1).left(1)
-    ]   
-      posLimitrofes.forEach({ pos => self.regarPlantaEn2(pos) }) 
-  }
-  
-  
-    
-    
-  
-method regarPlantaEn2(pos) {
-    const plantas = personaje.plantaEn(pos)   // colección
-    if (plantas.size() > 0) {                // si hay al menos una planta
-        plantas.first().esRegada()           // llamamos al método solo sobre el objeto Maiz
-    }
-}
-  method regarPlantaEn(pos) {
-    if (  personaje.hayPlantaEn(pos)  )  {
-      personaje.plantaEn(pos).esRegada()
-    }
-  }
+	method regarLimitrofes() {
+		self.posicionesLimitrofes().forEach({ pos => personaje.regarPlantaEn(pos)  }) 
+	} 
+  // aca retorno una collecion en donde filtro  los cultivs limirtrofes del aspersor
+  method cultivosLimitrofes() {
+    return  personaje.cultivos().filter( {planta => self.position().distance(planta.position()) < 2})
+  }   
 
+  // con este metodo retorno ls posciones de los cultivos limitrofes
+  method posicionesLimitrofes() {
+    const todasLasPosiciones = personaje.cultivos().map({ cultivo => cultivo.position() }) 
+    return todasLasPosiciones.filter( { unaPosicion => 
+        self.position().distance(unaPosicion) < 2 
+    })
+}
+  
   method puedeRegarse() {    return false }
   method esRegada()     {  }
 }

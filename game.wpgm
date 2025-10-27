@@ -24,18 +24,18 @@ program farmville {
 	keyboard.t().onPressDo {  personaje.sembrar( cultivoFactory.crearTrigo(personaje.position()))  }
 	keyboard.o().onPressDo {  personaje.sembrar( cultivoFactory.crearTomaco(personaje.position())) }	
 	
-	keyboard.r().onPressDo {  personaje.regar( personaje.plantaAca() )}
+	//keyboard.r().onPressDo {  personaje.regarEn( personaje.position() )}
 	 
 	keyboard.c().onPressDo { personaje.cosechar() }
 	
 	keyboard.v().onPressDo     { personaje.vender()   }
 	keyboard.space().onPressDo { personaje.oroTotal() } 
 
-	keyboard.a().onPressDo               {  personaje.colocarAspersor()    }
-	game.onTick(1000, "regarLimitrofes", { aspersores.activarAspersores()  } )
+	keyboard.a().onPressDo {  personaje.colocarAspersor()    }
+	
+	aspersores.iniciarRiego()
 
 	mercados.plantarMercados()
-	aspersores.activarAspersores()
 	game.addVisual(personaje)
  	
 	//  COMIENZA

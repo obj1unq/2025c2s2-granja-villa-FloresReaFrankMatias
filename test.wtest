@@ -51,7 +51,7 @@ describe "Test de Cosecha" {
         const maiz = cultivoFactory.crearMaiz(personaje.position())
         assert.equals(game.at(1,1), personaje.position())
         personaje.sembrar(maiz)
-        personaje.regar( personaje.plantaAca() )
+        personaje.regarPlantaEn( personaje.position() )
         personaje.cosechar()
         assert.equals(#{maiz}, personaje.cosecha()  )
     }
@@ -61,8 +61,8 @@ describe "Test de Cosecha" {
         const trigo = cultivoFactory.crearTrigo(personaje.position())
         assert.equals(game.at(2,1), personaje.position())
         personaje.sembrar(trigo)
-        personaje.regar( personaje.plantaAca() )
-        personaje.regar( personaje.plantaAca() )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.regarPlantaEn( personaje.position() )
         personaje.cosechar()
         assert.equals(#{trigo}, personaje.cosecha()  )
     }
@@ -101,37 +101,37 @@ describe "Test de Regado" {
   test "Regar maiz 1 vez" {
     const maiz = cultivoFactory.crearMaiz(personaje.position())
     personaje.sembrar(maiz)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     assert.equals("corn_adult.png", maiz.image() )
   }
    test "Regar  trigo 2 veces" {
     const trigo = cultivoFactory.crearTrigo(personaje.position())
     personaje.sembrar(trigo)
-    personaje.regar( personaje.plantaAca() )
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
     assert.equals("wheat_2.png", trigo.image() ) 
   }
    test "Regar trigo 3 veces" {
     const trigo = cultivoFactory.crearTrigo(personaje.position())
     personaje.sembrar(trigo)
-    personaje.regar( personaje.plantaAca() )
-    personaje.regar( personaje.plantaAca() )
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
     assert.equals("wheat_3.png", trigo.image() ) 
   }
   test "Regar tomaco 1 vez" {
     const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
     assert.equals(personaje.position(  ) , tomaco.position()  ) 
   }
   test "Regar tomaco 2 veces" {
     const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
     assert.equals( personaje.position() , tomaco.position()  ) 
   }
@@ -140,18 +140,20 @@ describe "Test de Regado" {
     personaje.position(game.origin())
     const tomaco = cultivoFactory.crearTomaco(personaje.position())
     personaje.sembrar(tomaco)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
-    personaje.regar( personaje.plantaAca() )
+    personaje.regarPlantaEn( personaje.position() )
     personaje.mover(arriba)
     assert.equals( personaje.position(  ) , tomaco.position()  ) 
   }
   test "Regar sin planta" {
-    assert.throwsException({personaje.regar( personaje.plantaAca() )})
+    assert.throwsException({personaje.regarPlantaEn( personaje.position() )})
+  
   }
 }
+
 
 //---------------------   TEST ASPERSORES  ----------------------
 describe "Test de Aspersores" {
@@ -230,14 +232,14 @@ describe "Test Mercados" {
         assert.equals(game.at(1,1), personaje.position())
          maiz = cultivoFactory.crearMaiz(personaje.position())
         personaje.sembrar(maiz )
-        personaje.regar( personaje.plantaAca() )
+        personaje.regarPlantaEn( personaje.position() )
         personaje.cosechar()
         // 150 monedas por el maiz
         personaje.position( game.at(2,1) )
          trigo = cultivoFactory.crearTrigo(personaje.position())
         personaje.sembrar(trigo )
-        personaje.regar(personaje.plantaAca() )
-        personaje.regar(personaje.plantaAca() )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.regarPlantaEn( personaje.position() )
         personaje.cosechar()
 
         //100 monedas por el trigo de evolucion 2

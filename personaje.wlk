@@ -21,14 +21,17 @@ object personaje {
 		
 	}
 
-	method regar(planta) {
-		self.validadRegar(self.plantaAca())	
-	  	planta.esRegada()
-	}
+	method regarPlantaEn(pos) {
+		self.validarRegarEn(pos)
+    	const plantas = self.plantaEn(pos)   
+	    plantas.first().esRegada()          
+    
+}
+
 	method cosechar() {
 	  	self.validarCosecha()
-		const cultivo = self.plantaAca()
-		game.removeVisual(self.plantaAca())
+		const cultivo = self.plantaEn(position).first()
+		game.removeVisual(cultivo)
 		cosecha.add(cultivo )
 		cultivos.remove(cultivo )
 	}
@@ -43,7 +46,7 @@ object personaje {
 	}
 	method colocarAspersor() {
 		self.validarPlantar()
-		aspersores.plantarAspersor()	
+		aspersores.instalarAspersor(position)	
 		}
 
 	method valorDeCosechaTotal(){	return cosecha.sum{ planta => planta.precio() }}	
@@ -57,19 +60,19 @@ object personaje {
 	method validarPlantar() {
 			//if(self.hayPlantaAca() || self.estaSobreUnMercado()  || self.estaSobreUnAspersor()  ){
 		if(  not game.colliders(self).isEmpty() ){ 
-			self.error("No se puede planta aca")
+			self.error("No se puede plantar aca")
 		}  
 	}
-	method validadRegar(semilla) {
-	  if(not self.hayPlantaAca()){
-		self.error("No hay planta para regar")
-	  }
+	method validarRegarEn(posicionARegar) {
+		if(!self.hayPlantaEn(posicionARegar)) {
+			self.error("No se puede regar aca")
+		}
 	}
 	method validarCosecha() {
-	  	if (  not self.hayPlantaAca() ) {
+	  	if (  self.plantaEn(position).isEmpty() ) {
     		self.error("No hay ninguna planta para cosechar")
     	}
-    	if (not self.plantaAca().puedeSerCosechada()) {
+    	if (not self.plantaEn(position).first().puedeSerCosechada()) {
         	self.error("La planta aún no  esta lista para cosechar")
     	}
 	}
@@ -82,27 +85,30 @@ object personaje {
 
 
 //------------------------       -------
-	method hayPlantaAca() {
-		//consulta si en la poscicion del personaje hay una planta
-	  return  cultivos.any({ planta => planta.position() == position })
-	}
-	method plantaAca() {
-		//retorna la planta de la pos actual
-	  return cultivos.find({ p => p.position() == position })
-	}
+	
+		//lo unifico con hayPlantaEn
+	//method hayPlantaAca() { 
+	//	//consulta si en la poscicion del personaje hay una planta
+	 // return  cultivos.any({ planta => planta.position() == position })
+	//}
 	method hayPlantaEn(pos) {
 		//retorna is hay una plnata en una pos por parametro
 	  return  cultivos.any({ planta => planta.position() == pos })
 	}
+
+		// lo unifico con plantaEn
+	//method plantaAca() { 
+	//  return cultivos.find({ p => p.position() == position })
+	//}
+	
 	method plantaEn(posicion){
+		// retorna  la  planta que esta en una posicion dad por parametro
         return game.getObjectsIn(posicion).filter({obj => cultivos.contains(obj)})
     }
 	method estaSobreUnMercado() {
 		return mercados.hayMercadoEn(position)
 	
 	}
-	method estaSobreUnAspersor() {
-	  return aspersores.hayAspersorEn(position)
-	}
+
 
 }

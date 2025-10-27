@@ -63,35 +63,47 @@ class Tomaco {
 		return "tomaco_baby.png"
 	}
 	
-	//method esRegada2() {
-	//	if(position.up(1).y() != game.height() && game.getObjectsIn(position.up(1)).isEmpty() ){
-	//			position = position.up(1)
-	//	} else {
-	//		position = game.at(position.x(), 0)
-	//	}
-	//}
-	method esRegada() {
-		
-		self.validarMoverTomacoAlRegar(position.up(1), position.down(game.height() - 1)  )
-		if (not (position.y() == game.height() - 1)  ) {
-			position = position.up(1)
-		}
-		else {
-			position = position.down(game.height() - 1)
-		}
-		
+//  version anterior, solo la comento no la borro por las dudas
+//	method esRegada() { 
+//		
+//		self.validarMoverTomacoAlRegar(position.up(1), position.down(game.height() - 1)  )
+//		if (not (position.y() == game.height() - 1)  ) {
+//			position = position.up(1)
+//		}
+//		else {
+//			position = position.down(game.height() - 1)
+//		}
+//		
+//		
+//		
+//	}
+
+	method esRegada() { 
+		self.validarDestino(self.posicionAlRegar())
+		position = self.posicionAlRegar() 
 	}
+
+    // el tomaco cuando se riega se mueve arriba si no esta en el borde superior
+	 // o sino a la posicion abajo de todo
+	method posicionAlRegar() {
+	  return if (  not (position.y() == game.height() - 1)){           //position.y() == game.height() - 1) {
+              position.up(1)    
+        } else {
+              position.down(game.height() - 1)                 
+        }
+	}
+	// en esta subtarea valido si se puede mover el tomaco al ser regado, osea que  e nla pos
+	//   que se mueve al ser regado no haya nada 
+	method validarDestino(posicionAMoverse) {
+        if (not game.getObjectsIn(posicionAMoverse).isEmpty()) {
+            self.error("No puedo ser regada ")
+		}
+	}
+
 	
 	method puedeSerCosechada() {	return true            	}
 	method esCosechada()       { 	game.removeVisual(self)	}
-	method validarMoverTomacoAlRegar(pos1,pos2) {
-	  if( not game.getObjectsIn(pos1).isEmpty() ){ //personaje.hayPlantaEn(pos1)   ){
-			self.error("No puedo ser regada")	
-	  }
-	  if( not game.getObjectsIn(pos2).isEmpty()  ){ //personaje.hayPlantaEn(pos2)
-		self.error("No puedo ser regada ")
-	  }
-	}
+	
 }
 
 
