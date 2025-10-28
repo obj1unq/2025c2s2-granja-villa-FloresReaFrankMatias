@@ -23,8 +23,8 @@ object personaje {
 
 	method regarPlantaEn(pos) {
 		self.validarRegarEn(pos)
-    	const plantas = self.plantaEn(pos)   
-	    plantas.first().esRegada()          
+    	const cultivo = self.plantaEn(pos)   
+	    cultivo.first().esRegada()          
     
 }
 
