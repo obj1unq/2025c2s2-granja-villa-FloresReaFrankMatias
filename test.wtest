@@ -1,0 +1,281 @@
+import mercado.*
+import cultivos.* 
+import personaje.*
+import wollok.game.*
+import direcciones.*
+import aspersor.*
+
+//---------------------   TEST SEMBRADO  ----------------------
+describe "Test de Sembrado" {
+  
+  test "Sembrar Maiz" {
+    personaje.sembrar(cultivoFactory.crearMaiz( personaje.position() ))
+    assert.that(personaje.hayPlantaEn( personaje.position() ) )
+    assert.that( personaje.cultivos().size()==1 )
+  }
+   test "Sembrar Tomaco" {
+    personaje.sembrar(cultivoFactory.crearTomaco(personaje.position()))
+    assert.that(personaje.hayPlantaEn( personaje.position() )) 
+    assert.that( personaje.cultivos().size()==1 )
+  }
+ 
+  test "sembrar en lugar ocupado por otro cultivo" {
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )
+    assert.throwsException({ personaje.sembrar(cultivoFactory.crearTomaco(personaje.position())) })
+    assert.that( personaje.cultivos().size()==1 )
+  }
+  test "Sembrar 3 cultivos en distintas posiciones"{
+    personaje.position(game.at(1,1))
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )  
+    personaje.position(game.at(2,1))
+    personaje.sembrar(cultivoFactory.crearTrigo(personaje.position()))
+    personaje.position(game.at(3,1))
+    personaje.sembrar(cultivoFactory.crearTomaco(personaje.position()))
+    assert.that( personaje.cultivos().size()==3 )
+  }
+  test "Sembrar 2 cultivos en la misma posicion" {
+    const trigo =cultivoFactory.crearTrigo(personaje.position())
+    personaje.position(game.at(1,1))
+    personaje.sembrar(cultivoFactory.crearMaiz(personaje.position()) )  
+    assert.throwsException({ personaje.sembrar(trigo) })
+  }
+  
+}
+
+//--------------       TEST COSECHAS           ---------------------
+describe "Test de Cosecha" {
+   
+    test "Cosechar maiz adulto" {
+        
+        personaje.position( game.at(1,1) )
+        const maiz = cultivoFactory.crearMaiz(personaje.position())
+        assert.equals(game.at(1,1), personaje.position())
+        personaje.sembrar(maiz)
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.cosechar()
+        assert.equals(#{maiz}, personaje.cosecha()  )
+    }
+    test "Cosechar trigo evolucion 2" {
+         
+        personaje.position( game.at(2,1) )
+        const trigo = cultivoFactory.crearTrigo(personaje.position())
+        assert.equals(game.at(2,1), personaje.position())
+        personaje.sembrar(trigo)
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.cosechar()
+        assert.equals(#{trigo}, personaje.cosecha()  )
+    }
+    test "Cosechar tomaco" {
+        
+        personaje.position( game.at(3,1) )
+        const tomaco = cultivoFactory.crearTomaco(personaje.position())
+        assert.equals(game.at(3,1), personaje.position())
+        personaje.sembrar(tomaco)
+        
+        personaje.cosechar()
+        assert.equals(#{tomaco}, personaje.cosecha()  )
+    }   
+   
+    test "Cosechar sin planta" {
+      personaje.position( game.at(1,1) )
+      assert.throwsException({ personaje.cosechar() })
+}
+test "Cosechar planta que no puede ser cosechada" {
+    personaje.position(game.at(1,1))
+    const maiz = cultivoFactory.crearMaiz(personaje.position())
+    personaje.sembrar(maiz)
+
+    assert.throwsException({ personaje.cosechar() })
+}
+
+
+}
+
+
+
+
+//---------------------   TEST REGADO  ----------------------
+describe "Test de Regado" {
+  
+  test "Regar maiz 1 vez" {
+    const maiz = cultivoFactory.crearMaiz(personaje.position())
+    personaje.sembrar(maiz)
+    personaje.regarPlantaEn( personaje.position() )
+    assert.equals("corn_adult.png", maiz.image() )
+  }
+   test "Regar  trigo 2 veces" {
+    const trigo = cultivoFactory.crearTrigo(personaje.position())
+    personaje.sembrar(trigo)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
+    assert.equals("wheat_2.png", trigo.image() ) 
+  }
+   test "Regar trigo 3 veces" {
+    const trigo = cultivoFactory.crearTrigo(personaje.position())
+    personaje.sembrar(trigo)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.regarPlantaEn( personaje.position() )
+    assert.equals("wheat_3.png", trigo.image() ) 
+  }
+  test "Regar tomaco 1 vez" {
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
+    personaje.sembrar(tomaco)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    assert.equals(personaje.position(  ) , tomaco.position()  ) 
+  }
+  test "Regar tomaco 2 veces" {
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
+    personaje.sembrar(tomaco)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    assert.equals( personaje.position() , tomaco.position()  ) 
+  }
+  test "Regar tomaco 3 veces" {
+    
+    personaje.position(game.origin())
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
+    personaje.sembrar(tomaco)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    personaje.regarPlantaEn( personaje.position() )
+    personaje.mover(arriba)
+    assert.equals( personaje.position(  ) , tomaco.position()  ) 
+  }
+  test "Regar sin planta" {
+    assert.throwsException({personaje.regarPlantaEn( personaje.position() )})
+  
+  }
+}
+
+
+//---------------------   TEST ASPERSORES  ----------------------
+describe "Test de Aspersores" {
+
+  test "Plantar Aspersor" {
+    personaje.colocarAspersor()
+    assert.equals(1, aspersores.aspersoresTotales().size() )
+  }
+
+  
+  
+  test "sembrar cuatro maices y plantar un aspersor en el medio" {
+    
+    
+    const m1 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(4,3))
+    personaje.sembrar(m1)
+    assert.equals("corn_baby.png", m1.image())
+
+    const m2 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(2,3))
+    personaje.sembrar(m2)
+    assert.equals("corn_baby.png", m2.image())
+
+    const m3 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(3,4))
+    personaje.sembrar(m3)
+    assert.equals("corn_baby.png", m3.image())
+    
+    const m4 = cultivoFactory.crearMaiz(personaje.position())
+    personaje.position(game.at(3,2))
+    personaje.sembrar(m4)
+    assert.equals("corn_baby.png", m4.image())
+  
+    personaje.position(game.at(3,3))
+    personaje.colocarAspersor()
+    aspersores.activarAspersores()  
+
+    //
+    assert.equals("corn_adult.png", m2.image())
+    assert.equals("corn_adult.png", m3.image())
+    assert.equals("corn_adult.png", m4.image())
+    assert.equals("corn_adult.png", m1.image())
+    assert.equals(4, personaje.cultivos().size())
+}
+
+  test " test aspersores con tomaco"{
+    personaje.position(game.at(5,5))
+    const tomaco = cultivoFactory.crearTomaco(personaje.position())
+    personaje.sembrar(tomaco)
+    assert.equals("tomaco_baby.png", tomaco.image())
+    personaje.position(game.at(4,4))
+    personaje.colocarAspersor()
+    aspersores.activarAspersores()  
+    assert.equals(game.at(5,6), tomaco.position())
+    assert.equals("tomaco_baby.png", tomaco.image())
+    aspersores.activarAspersores()  
+    assert.equals(game.at(5,6), tomaco.position())
+    assert.equals("tomaco_baby.png", tomaco.image())
+  }
+
+}
+
+
+
+//---------------  TEST MERCADOS
+
+
+
+describe "Test Mercados" {
+  var maiz
+  var trigo
+  var tomaco
+  method initialize(){
+    personaje.position( game.at(1,1) )
+        assert.equals(game.at(1,1), personaje.position())
+         maiz = cultivoFactory.crearMaiz(personaje.position())
+        personaje.sembrar(maiz )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.cosechar()
+        // 150 monedas por el maiz
+        personaje.position( game.at(2,1) )
+         trigo = cultivoFactory.crearTrigo(personaje.position())
+        personaje.sembrar(trigo )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.regarPlantaEn( personaje.position() )
+        personaje.cosechar()
+
+        //100 monedas por el trigo de evolucion 2
+        
+        personaje.position( game.at(3,1) )
+         tomaco = cultivoFactory.crearTomaco(personaje.position())
+        personaje.sembrar(tomaco )
+        personaje.cosechar()
+        //80 por el tomaco
+  }
+  test " Test de venta exitoso"{
+    mercados.plantarMercados()
+    personaje.position(game.at(0,0))
+    assert.equals(game.at(0,0), personaje.position()) 
+    assert.that(  mercados.hayMercadoEn(personaje.position()) )
+    personaje.vender()
+    assert.equals(#{}, personaje.cosecha())
+    assert.equals(330, personaje.monedas())
+    assert.equals(670, mercados.mercadoEn(personaje.position()).monedas()) 
+    assert.equals(#{maiz,trigo,tomaco}, mercados.mercadoEn(personaje.position() ).mercaderia()) 
+  }
+
+  test " Test: monedas insuficiente para comprar"{
+        mercados.plantarMercados()
+        personaje.position( game.at(0,9) )
+        assert.equals(game.at(0,9), personaje.position() )
+        assert.throwsException({ personaje.vender() })
+        assert.equals(#{ }  , mercados.mercadoEn(personaje.position()).mercaderia() )
+
+  } 
+  test " Test: vender sin estar en un mercado"{
+        personaje.position( game.at(1,1) )
+        mercados.plantarMercados()
+        assert.equals(game.at(1,1), personaje.position())
+        assert.throwsException({ personaje.vender() })
+
+  }
+
+}
